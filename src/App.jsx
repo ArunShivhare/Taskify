@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { motion } from "framer-motion";
+import Footer from './components/Footer';
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
   const [todos, settodos] = useState([])
   const [showfinished, setshowfinished] = useState(true)
   const [filter, setFilter] = useState("all");
+  const [editId, setEditId] = useState(null);
 
   useEffect(() => {
     let todostring = localStorage.getItem("todos")
@@ -21,8 +23,8 @@ function App() {
   }, [])
 
 
-  const savetols = (params) => {
-    localStorage.setItem("todos", JSON.stringify(todos))
+  const savetols = (updatedTodos) => {
+    localStorage.setItem("todos", JSON.stringify(updatedTodos))
   }
 
   // const toggleFinished = (e) => {
@@ -36,27 +38,38 @@ function App() {
   });
 
   const handleedit = (e, id) => {
-    let t = todos.filter(i => i.id === id)
-    settodo(t[0].todo)
-    let newtodos = todos.filter(item => {
-      return item.id !== id;
-    });
-    settodos(newtodos)
-    savetols()
+    let t = todos.find(i => i.id === id);
+    settodo(t.todo);
+    setEditId(id);   // Just store which task we’re editing
   }
 
   const handledelete = (e, id) => {
-    let newtodos = todos.filter(item => {
-      return item.id !== id;
-    });
+    const newtodos = todos.filter(item => item.id !== id)
     settodos(newtodos)
-    savetols()
+    savetols(newtodos)
   }
 
   const handleadd = () => {
-    settodos([...todos, { id: uuidv4(), todo, isCompleted: false }])
-    settodo("")
-    savetols()
+    if (editId) {
+      // Editing existing task
+      const newtodos = todos.map(item =>
+        item.id === editId
+          ? { ...item, todo }
+          : item
+      );
+
+      settodos(newtodos);
+      savetols(newtodos);
+      setEditId(null);
+
+    } else {
+      // Adding new task
+      const newtodos = [...todos, { id: uuidv4(), todo, isCompleted: false }];
+      settodos(newtodos);
+      savetols(newtodos);
+    }
+
+    settodo("");
   }
 
   const handlechange = (e) => {
@@ -65,13 +78,14 @@ function App() {
 
   const handlecheckbox = (e) => {
     let id = e.target.name;
-    let index = todos.findIndex(item => {
-      return item.id === id;
-    })
+
+    let index = todos.findIndex(item => item.id === id)
+
     let newtodos = [...todos];
     newtodos[index].isCompleted = !newtodos[index].isCompleted;
+
     settodos(newtodos)
-    savetols()
+    savetols(newtodos)
   }
 
 
@@ -79,21 +93,28 @@ function App() {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-br from-cyan-100 via-cyan-50 to-white py-10 px-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-white pb-20 py-14 px-4">
 
         <div className="max-w-3xl mx-auto">
 
           {/* Main Card */}
-          <div className="bg-white/70 backdrop-blur-lg shadow-xl rounded-2xl p-6 sm:p-8 border border-cyan-200">
+          <div className="bg-white/80 backdrop-blur-xl 
+        shadow-[0_10px_40px_rgba(0,0,0,0.08)] 
+        rounded-3xl p-8 border border-slate-200">
 
             {/* Title */}
-            <h1 className="font-bold text-center text-2xl sm:text-3xl md:text-4xl mb-8">
-              Taskify - Plan Your Day
+            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-slate-800 text-center">
+              <span className="text-indigo-600">TASK</span>
+              <span className="text-slate-900">iFY</span>
             </h1>
 
+            <p className="text-slate-500 text-lg text-center mt-2">
+              Plan smart. Execute better.
+            </p>
+
             {/* Add Todo */}
-            <div className="mb-8">
-              <h2 className="text-lg sm:text-xl font-semibold mb-4">
+            <div className="mb-10">
+              <h2 className="text-lg font-semibold text-slate-700 mb-4">
                 Add a ToDo
               </h2>
 
@@ -104,46 +125,75 @@ function App() {
                   value={todo}
                   type="text"
                   placeholder="Enter your task..."
-                  className="flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-cyan-500 outline-none"
+                  className="flex-1 rounded-xl border border-slate-300 
+                px-5 py-3 text-slate-700
+                focus:ring-2 focus:ring-indigo-500 
+                focus:border-indigo-500 
+                transition-all duration-200 outline-none"
                 />
 
                 <button
                   onClick={handleadd}
                   disabled={todo.length <= 3}
-                  className="bg-cyan-600 hover:bg-cyan-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200"
+                  className={`text-white font-medium px-6 py-3 rounded-xl 
+                transition-all duration-200 shadow-sm
+                ${editId
+                      ? "bg-amber-500 hover:bg-amber-600"
+                      : "bg-indigo-600 hover:bg-indigo-700"}
+                disabled:bg-slate-300 disabled:cursor-not-allowed`}
                 >
-                  Save
+                  {editId ? "Update Task" : "Add Task"}
                 </button>
+
+                {editId && (
+                  <button
+                    onClick={() => {
+                      setEditId(null);
+                      settodo("");
+                    }}
+                    className="px-5 py-3 rounded-xl bg-rose-500 hover:bg-rose-600 
+                  text-white transition-all duration-200 shadow-sm"
+                  >
+                    Cancel
+                  </button>
+                )}
 
               </div>
             </div>
 
-            <div className="h-[1px] w-full bg-gray-200 mb-6"></div>
+            <div className="h-[1px] w-full bg-slate-200 mb-10"></div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 mb-10">
 
-              <div className="bg-white shadow rounded-xl p-4 text-center">
-                <p className="text-sm text-gray-500">Total</p>
-                <p className="text-2xl font-bold">{todos.length}</p>
+              <div className="bg-white rounded-2xl p-5 border border-slate-100
+            shadow-md hover:shadow-lg transition-all duration-300 text-center">
+                <p className="text-sm text-slate-500">Total</p>
+                <p className="text-3xl font-semibold text-slate-800">
+                  {todos.length}
+                </p>
               </div>
 
-              <div className="bg-white shadow rounded-xl p-4 text-center">
-                <p className="text-sm text-gray-500">Completed</p>
-                <p className="text-2xl font-bold text-green-600">
+              <div className="bg-white rounded-2xl p-5 border border-slate-100
+            shadow-md hover:shadow-lg transition-all duration-300 text-center">
+                <p className="text-sm text-slate-500">Completed</p>
+                <p className="text-3xl font-semibold text-emerald-600">
                   {todos.filter(t => t.isCompleted).length}
                 </p>
               </div>
 
-              <div className="bg-white shadow rounded-xl p-4 text-center">
-                <p className="text-sm text-gray-500">Active</p>
-                <p className="text-2xl font-bold text-cyan-600">
+              <div className="bg-white rounded-2xl p-5 border border-slate-100
+            shadow-md hover:shadow-lg transition-all duration-300 text-center">
+                <p className="text-sm text-slate-500">Active</p>
+                <p className="text-3xl font-semibold text-indigo-600">
                   {todos.filter(t => !t.isCompleted).length}
                 </p>
               </div>
 
-              <div className="bg-white shadow rounded-xl p-4 text-center">
-                <p className="text-sm text-gray-500">Progress</p>
-                <p className="text-2xl font-bold text-purple-600">
+              <div className="bg-white rounded-2xl p-5 border border-slate-100
+            shadow-md hover:shadow-lg transition-all duration-300 text-center">
+                <p className="text-sm text-slate-500">Progress</p>
+                <p className="text-3xl font-semibold text-purple-600">
                   {todos.length === 0
                     ? "0%"
                     : Math.round(
@@ -154,9 +204,11 @@ function App() {
 
             </div>
 
-            <div className="w-full bg-gray-200 rounded-full h-3 mb-6">
+            {/* Progress Bar */}
+            <div className="w-full bg-slate-200 rounded-full h-3 mb-10">
               <div
-                className="bg-cyan-600 h-3 rounded-full transition-all duration-500"
+                className="bg-gradient-to-r from-indigo-500 to-purple-500 
+              h-3 rounded-full transition-all duration-500"
                 style={{
                   width: `${todos.length === 0
                     ? 0
@@ -166,106 +218,95 @@ function App() {
               ></div>
             </div>
 
-            {/* Todo List */}
-            <h2 className="text-lg sm:text-xl font-semibold mb-4">
+            {/* Todo Section */}
+            <h2 className="text-lg font-semibold text-slate-700 mb-4">
               Your ToDos
             </h2>
 
             {/* Filter Buttons */}
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3 mb-8">
 
-              <button
-                onClick={() => setFilter("all")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition 
-      ${filter === "all" ? "bg-cyan-600 text-white" : "bg-gray-200"}`}
-              >
-                All
-              </button>
-
-              <button
-                onClick={() => setFilter("active")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition 
-      ${filter === "active" ? "bg-cyan-600 text-white" : "bg-gray-200"}`}
-              >
-                Active
-              </button>
-
-              <button
-                onClick={() => setFilter("completed")}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition 
-      ${filter === "completed" ? "bg-cyan-600 text-white" : "bg-gray-200"}`}
-              >
-                Completed
-              </button>
+              {["all", "active", "completed"].map(type => (
+                <button
+                  key={type}
+                  onClick={() => setFilter(type)}
+                  className={`px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200
+                ${filter === type
+                      ? "bg-indigo-600 text-white shadow-md"
+                      : "bg-slate-200 text-slate-600 hover:bg-slate-300"}`}
+                >
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </button>
+              ))}
 
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
 
               {todos.length === 0 && (
-                <div className="text-gray-500 text-center py-6">
-                  ✨ You’re all caught up!
-                  Start by adding a task.
+                <div className="text-slate-500 text-center py-8">
+                  ✨ You’re all caught up! Start by adding a task.
                 </div>
               )}
 
-              {filteredTodos.map((item) => {
-                return (
-                  (showfinished || !item.isCompleted) && (
+              {filteredTodos.map((item) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
 
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                    
-                      className="bg-white shadow-sm border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                  className="bg-white rounded-2xl p-5 border border-slate-100
+                shadow-[0_4px_20px_rgba(0,0,0,0.05)]
+                hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+                flex flex-col sm:flex-row sm:items-center
+                justify-between gap-4
+                transition-all duration-300 hover:-translate-y-1"
+                >
+
+                  <div className="flex items-center gap-4 flex-1">
+
+                    <input
+                      name={item.id}
+                      onChange={handlecheckbox}
+                      type="checkbox"
+                      checked={item.isCompleted}
+                      className="accent-indigo-600 w-4 h-4"
+                    />
+
+                    <div
+                      className={`break-words text-slate-700 ${item.isCompleted
+                          ? "line-through text-slate-400"
+                          : ""
+                        }`}
                     >
+                      {item.todo}
+                    </div>
 
-                      {/* Left Side */}
-                      <div className="flex items-center gap-4 flex-1">
+                  </div>
 
-                        <input
-                          name={item.id}
-                          onChange={handlecheckbox}
-                          type="checkbox"
-                          checked={item.isCompleted}
-                          className="accent-cyan-600 w-4 h-4"
-                        />
+                  <div className="flex gap-2">
 
-                        <div
-                          className={`break-words ${item.isCompleted ? "line-through text-gray-400" : ""
-                            }`}
-                        >
-                          {item.todo}
-                        </div>
+                    <button
+                      onClick={(e) => handleedit(e, item.id)}
+                      className="bg-indigo-500 hover:bg-indigo-600 
+                    text-white p-2 rounded-lg transition-all duration-200"
+                    >
+                      <FaRegEdit />
+                    </button>
 
-                      </div>
+                    <button
+                      onClick={(e) => handledelete(e, item.id)}
+                      className="bg-rose-500 hover:bg-rose-600 
+                    text-white p-2 rounded-lg transition-all duration-200"
+                    >
+                      <MdDelete />
+                    </button>
 
-                      {/* Buttons */}
-                      <div className="flex gap-2 self-end sm:self-auto">
+                  </div>
 
-                        <button
-                          onClick={(e) => handleedit(e, item.id)}
-                          className="bg-cyan-500 hover:bg-cyan-600 text-white p-2 rounded-lg transition"
-                        >
-                          <FaRegEdit />
-                        </button>
-
-                        <button
-                          onClick={(e) => handledelete(e, item.id)}
-                          className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition"
-                        >
-                          <MdDelete />
-                        </button>
-
-                      </div>
-
-                    </motion.div>
-                  )
-                );
-              })}
+                </motion.div>
+              ))}
 
             </div>
 
@@ -273,6 +314,8 @@ function App() {
 
         </div>
       </div>
+
+      <Footer />
     </>
   )
 }

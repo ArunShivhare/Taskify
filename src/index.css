@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
+/* body{
     background-color: rgb(159, 195, 195);
-}
+} */
 
 /* Hide scrollbar but keep scroll working */
 ::-webkit-scrollbar {
