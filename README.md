@@ -1,16 +1,23 @@
-# React + Vite
+# 🚀 Taskify - Plan Your Day
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Developed a responsive Todo List application using React and Tailwind CSS, enabling users to efficiently create, update, and delete tasks.
+Implemented component-based architecture, state management, and reusable UI elements with React Hooks.
+Enhanced user experience with clean UI design and intuitive icons using React Icons.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Tech Stack
+React, Tailwind CSS, React Icons
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📷 Screenshots
+<img width="1918" height="1077" alt="image" src="https://github.com/user-attachments/assets/91dccfe7-c893-438b-8295-05856b1e2888" />
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## ⚙️ Installation & Setup
+1. Clone the repository  
+   ```bash
+   git clone https://github.com/your-username/project-name.git
