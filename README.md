@@ -11,8 +11,9 @@ React, Tailwind CSS, React Icons
 
 ---
 
-## 📷 Screenshots
-<img width="1918" height="1077" alt="image" src="https://github.com/user-attachments/assets/91dccfe7-c893-438b-8295-05856b1e2888" />
+## Live 
+
+[View Site](https://taskify-sepia-psi.vercel.app/)
 
 
 ---
