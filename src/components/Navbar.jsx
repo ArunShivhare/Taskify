@@ -18,7 +18,7 @@ transition-colors duration-500 sticky top-0 z-10'>
             {/* <a className='text-black hover:font-bold' href="/">Home</a>
             <a className='text-black hover:font-bold' href="#">About</a>
             <a className='text-black hover:font-bold' href="#">Contact</a> */}
-            <a
+            {/* <a
               href="https://github.com/ArunShivhare"
               target="_blank"
               rel="noopener noreferrer"
@@ -28,7 +28,7 @@ transition-colors duration-500 sticky top-0 z-10'>
                 src="/github.svg"
                 alt="GitHub"
               />
-            </a>
+            </a> */}
           </li>
           <li>
             <button
