@@ -5,6 +5,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { motion } from "framer-motion";
 import Footer from './components/Footer';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
 
@@ -322,6 +323,7 @@ function App() {
   </div>
 
   <Footer />
+  <Analytics />
 </>
   )
 }
