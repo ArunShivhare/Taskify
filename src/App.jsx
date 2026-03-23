@@ -124,10 +124,13 @@ function App() {
       transition-colors duration-500">
 
         {/* Title */}
-        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-center">
+        {/* <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-center">
           <span className="text-indigo-600">TASK</span>
           <span className="text-slate-900 dark:text-slate-100">iFY</span>
-        </h1>
+        </h1> */}
+        <div className='flex justify-center'>
+          <img width={100} src="/logo.png" alt="" />
+        </div>
 
         <p className="text-slate-500 dark:text-slate-400 text-lg text-center mt-2">
           Plan smart. Execute better.
